@@ -1,0 +1,23 @@
+[Unit]
+Description=USDA Farm Cost/Price Squeeze Dash App
+After=network.target
+
+[Service]
+User=user
+Restart=always
+RestartSec=5
+ExecStartPre=-/usr/bin/docker stop ag-prices-viz
+ExecStartPre=-/usr/bin/docker rm ag-prices-viz
+# No --env-file: the app only reads data/ — the NASS API key is needed solely
+# by the fetch step (see refresh_data.sh)
+# DASH_URL_BASE_PATHNAME: all dashboards share one Funnel port, each mounted at
+# its own sub-path (see OPERATIONS.md "Tailscale Funnel")
+ExecStart=/usr/bin/docker run --rm --pull=never --name ag-prices-viz \
+    -v /home/user/ag-prices-viz/data:/app/data:rw \
+    -p 127.0.0.1:8053:8053 \
+    -e DASH_URL_BASE_PATHNAME=/ag-prices/ \
+    localhost/ag-prices-viz:latest
+ExecStop=/usr/bin/docker stop ag-prices-viz
+
+[Install]
+WantedBy=multi-user.target

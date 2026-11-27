@@ -1,0 +1,85 @@
+/* Chart chrome — title, subtitle, legend and footer bar live in HTML rather
+   than inside the Plotly figure, so the footer can span the full width. */
+
+body {
+    margin: 0;
+    background: #ffffff;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #3f4a45;
+    -webkit-font-smoothing: antialiased;
+}
+
+.page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 18px 0 0 0;
+}
+
+.title {
+    margin: 0 22px 4px 22px;
+    font-size: 19px;
+    font-weight: 700;
+    color: #14532d;
+    letter-spacing: -0.2px;
+}
+
+.subtitle {
+    margin: 0 22px 6px 22px;
+    font-size: 12.5px;
+    color: #6b7671;
+}
+
+.legend {
+    display: flex;
+    gap: 26px;
+    margin: 2px 22px 14px 22px;
+    font-size: 12px;
+}
+
+.legend-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.swatch {
+    display: inline-block;
+    width: 26px;
+    height: 13px;
+    border-radius: 2px;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    padding: 9px 22px;
+    background: #1f4a3c;
+    color: #ffffff;
+}
+
+.credit {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.source {
+    font-size: 10.5px;
+    color: #b9d4c8;
+    text-align: right;
+}
+
+.beta-tag {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 1px 7px;
+    border: 1px solid #14532d;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    color: #14532d;
+}
