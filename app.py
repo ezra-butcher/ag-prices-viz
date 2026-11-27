@@ -112,6 +112,31 @@ def _with_crossings(dates, costs, prices):
 
 # ── Figure ────────────────────────────────────────────────────────────────────
 
+FIG_HEIGHT = 430
+FIG_MARGIN = dict(l=60, r=95, t=34, b=30)
+LABEL_MIN_GAP_PX = 15   # minimum vertical distance between the two end labels
+
+_ALL_VALUES = [w for w in panel_data.values()]
+Y_RANGE = (
+    min(w.min().min() for w in _ALL_VALUES) - 5,
+    max(w.max().max() for w in _ALL_VALUES) + 8,
+)
+PX_PER_POINT = (FIG_HEIGHT - FIG_MARGIN["t"] - FIG_MARGIN["b"]) / (Y_RANGE[1] - Y_RANGE[0])
+
+
+def _label_shifts(costs_end: float, prices_end: float) -> dict:
+    """Vertical pixel offsets that keep the two end-of-line labels apart.
+
+    Where the series end close together their labels would overprint, so the
+    higher series' label moves up and the lower one down by just enough to
+    reach LABEL_MIN_GAP_PX. When the lines are already far apart both stay put.
+    """
+    gap_px = abs(costs_end - prices_end) * PX_PER_POINT
+    push = max(0.0, LABEL_MIN_GAP_PX - gap_px) / 2
+    sign = 1 if costs_end >= prices_end else -1
+    return {"Costs": sign * push, "Prices": -sign * push}
+
+
 def build_figure() -> go.Figure:
     fig = make_subplots(
         rows=1,
@@ -125,6 +150,7 @@ def build_figure() -> go.Figure:
         wide = panel_data[panel]
         dates, costs, prices = wide.index, wide["Costs"].to_numpy(), wide["Prices"].to_numpy()
         fx, fc, fp = _with_crossings(dates, costs, prices)
+        shifts = _label_shifts(costs[-1], prices[-1])
 
         # Conditional band: two fill pairs, each anchored to the costs line.
         # min(costs, prices) shades only where costs sit above prices, and
@@ -174,7 +200,7 @@ def build_figure() -> go.Figure:
             fig.add_annotation(
                 x=dates[-1], y=values[-1],
                 text=f"<b>{name} {values[-1]:.0f}</b>",
-                xanchor="left", xshift=9, yanchor="middle",
+                xanchor="left", xshift=9, yshift=shifts[name], yanchor="middle",
                 showarrow=False, font=dict(size=11, color=color),
                 row=1, col=col,
             )
@@ -193,9 +219,6 @@ def build_figure() -> go.Figure:
             font=dict(size=12.5, color=INK, family="Helvetica Neue, Arial, sans-serif"),
         )
 
-    lo = min(w.min().min() for w in panel_data.values())
-    hi = max(w.max().max() for w in panel_data.values())
-
     fig.update_xaxes(
         range=[FIRST_DATE - pd.DateOffset(months=3), LAST_DATE + pd.DateOffset(months=3)],
         dtick="M24", tickformat="%Y",
@@ -204,7 +227,7 @@ def build_figure() -> go.Figure:
         tickfont=dict(size=10, color=BODY),
     )
     fig.update_yaxes(
-        range=[lo - 5, hi + 8], dtick=20, tick0=100,
+        range=list(Y_RANGE), dtick=20, tick0=100,
         showgrid=True, gridcolor=GRID,
         showline=False, zeroline=False,
         tickfont=dict(size=10, color=BODY),
@@ -216,8 +239,8 @@ def build_figure() -> go.Figure:
     )
 
     fig.update_layout(
-        height=430,
-        margin=dict(l=60, r=95, t=34, b=30),
+        height=FIG_HEIGHT,
+        margin=FIG_MARGIN,
         plot_bgcolor="white",
         paper_bgcolor="white",
         font=dict(family="Helvetica Neue, Arial, sans-serif", color=BODY),
