@@ -59,15 +59,15 @@ body {
     color: #ffffff;
 }
 
-.credit {
-    font-size: 12px;
-    font-weight: 700;
-}
-
 .source {
     font-size: 10.5px;
     color: #b9d4c8;
-    text-align: right;
+}
+
+.repo-link {
+    font-size: 10.5px;
+    color: #b9d4c8;
+    white-space: nowrap;
 }
 
 .beta-tag {

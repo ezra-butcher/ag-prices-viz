@@ -27,10 +27,8 @@ PANELS = ["Crop farms", "Livestock farms"]
 TITLE = "America's farm economy is living two different realities"
 BETA = True   # shows a "Beta" tag next to the title; set False to remove
 SUBTITLE = "Prices farmers pay for inputs vs. prices they receive, monthly, {first}–{last}"
-
-# Edit these two lines to change the byline in the footer bar.
-CREDIT_NAME = "Ezra Butcher"
-CREDIT_AFFILIATION = ""   # e.g. "Iowa State University"; blank hides the separator
+DISCLAIMER = "Independent project, not affiliated with or endorsed by USDA."
+REPO_URL = "https://github.com/ezra-butcher/ag-prices-viz"
 
 
 # The narrative clause in each panel's callout is editorial; the percentages in
@@ -266,10 +264,6 @@ app = Dash(
 )
 server = app.server
 
-_credit = f"Created by {CREDIT_NAME}"
-if CREDIT_AFFILIATION:
-    _credit += f"  |  {CREDIT_AFFILIATION}"
-
 _source = (
     f"Source: USDA NASS, Agricultural Prices · {BASE_YEAR} avg = 100 "
     f"· Through {LAST_DATE:%B %Y}"
@@ -291,7 +285,7 @@ app.layout = html.Div(
             className="title",
         ),
         html.P(
-            SUBTITLE.format(first=FIRST_DATE.year, last=LAST_DATE.year),
+            f"{SUBTITLE.format(first=FIRST_DATE.year, last=LAST_DATE.year)}. {DISCLAIMER}",
             className="subtitle",
         ),
         dcc.Graph(
@@ -310,8 +304,8 @@ app.layout = html.Div(
         html.Div(
             className="footer",
             children=[
-                html.Span(_credit, className="credit"),
                 html.Span(_source, className="source"),
+                html.A("View on GitHub", href=REPO_URL, target="_blank", className="repo-link"),
             ],
         ),
     ],

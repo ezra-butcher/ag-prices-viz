@@ -75,7 +75,7 @@ Constants at the top of `app.py`:
 |---|---|
 | `BASE_YEAR` | Year whose monthly average is rebased to 100 (also sets the chart's start) |
 | `TITLE` / `SUBTITLE` | Headline text |
-| `CREDIT_NAME` / `CREDIT_AFFILIATION` | Byline in the footer bar |
+| `BETA` | Shows or hides the "Beta" tag next to the title |
 | `CALLOUTS` | Per-panel annotation templates |
 
 ## Requirements
