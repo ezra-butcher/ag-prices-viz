@@ -24,27 +24,15 @@ START = f"{BASE_YEAR}-01-01"
 
 PANELS = ["Crop farms", "Livestock farms"]
 
-TITLE = "America's farm economy is living two different realities"
+TITLE = "Agricultural Sector Price-Cost Margins"
 BETA = True   # shows a "Beta" tag next to the title; set False to remove
-SUBTITLE = "Prices farmers pay for inputs vs. prices they receive, monthly, {first}–{last}"
+SUBTITLE = (
+    "Source: USDA NASS Agricultural Prices — prices farmers pay for inputs vs. "
+    "prices they receive, monthly, {first}–{last}"
+)
 DISCLAIMER = "Independent project, not affiliated with or endorsed by USDA."
 REPO_URL = "https://github.com/ezra-butcher/ag-prices-viz"
 
-
-# The narrative clause in each panel's callout is editorial; the percentages in
-# it are computed from the data so they can never drift out of sync.
-CALLOUTS = {
-    "Crop farms": (
-        "Costs up {costs:.0f}% since {base}.<br>"
-        "Prices up only {prices:.0f}% — and<br>"
-        "falling behind since 2023."
-    ),
-    "Livestock farms": (
-        "Costs up {costs:.0f}% since {base} —<br>"
-        "but prices up {prices:.0f}%,<br>"
-        "keeping pace throughout."
-    ),
-}
 
 # ── Palette ───────────────────────────────────────────────────────────────────
 
@@ -196,20 +184,6 @@ def build_figure() -> go.Figure:
             row=1, col=col,
         )
 
-        fig.add_annotation(
-            xref="x domain", yref="y domain", x=0.035, y=0.97,
-            xanchor="left", yanchor="top", align="left",
-            text=CALLOUTS[panel].format(
-                base=BASE_YEAR,
-                costs=costs[-1] - 100,
-                prices=prices[-1] - 100,
-            ),
-            showarrow=False,
-            font=dict(size=10.5, color=BODY),
-            bgcolor="rgba(255,255,255,0.92)",
-            bordercolor=GRID, borderwidth=1, borderpad=5,
-            row=1, col=col,
-        )
 
     # Subplot titles are the only annotations added before ours — left-align
     # them over their panels instead of centring.
@@ -259,15 +233,10 @@ def build_figure() -> go.Figure:
 # serving behind a path-mounted proxy such as a shared Tailscale Funnel port.
 app = Dash(
     __name__,
-    title="USDA Farm Cost/Price Squeeze",
+    title="USDA Price-Cost Margins",
     url_base_pathname=os.environ.get("DASH_URL_BASE_PATHNAME", "/"),
 )
 server = app.server
-
-_source = (
-    f"Source: USDA NASS, Agricultural Prices · {BASE_YEAR} avg = 100 "
-    f"· Through {LAST_DATE:%B %Y}"
-)
 
 
 def legend_key(color: str, label: str):
@@ -285,7 +254,7 @@ app.layout = html.Div(
             className="title",
         ),
         html.P(
-            f"{SUBTITLE.format(first=FIRST_DATE.year, last=LAST_DATE.year)}. {DISCLAIMER}",
+            f"{SUBTITLE.format(first=f'{FIRST_DATE:%B %Y}', last=f'{LAST_DATE:%B %Y}')}. {DISCLAIMER}",
             className="subtitle",
         ),
         dcc.Graph(
@@ -297,14 +266,13 @@ app.layout = html.Div(
         html.Div(
             className="legend",
             children=[
-                legend_key(FILL_SQUEEZE, "Costs exceed prices (squeeze)"),
+                legend_key(FILL_SQUEEZE, "Costs exceed prices"),
                 legend_key(FILL_MARGIN, "Prices exceed costs"),
             ],
         ),
         html.Div(
             className="footer",
             children=[
-                html.Span(_source, className="source"),
                 html.A("View on GitHub", href=REPO_URL, target="_blank", className="repo-link"),
             ],
         ),

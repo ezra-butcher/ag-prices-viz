@@ -1,4 +1,4 @@
-# USDA Farm Cost/Price Squeeze Dashboard
+# USDA Price-Cost Margins Dashboard
 
 An interactive dashboard comparing the prices farmers **pay** for inputs against the prices they **receive** for what they sell, split between crop farms and livestock farms, monthly since 2019.
 
@@ -10,7 +10,7 @@ Built with Plotly Dash.
 ## Status
 
 **Phase 1 — replication.** The app currently renders a single static two-panel chart
-reproducing the cost/price squeeze view. Phase 2 will add interactivity and
+showing prices paid against prices received for each sector. Phase 2 will add interactivity and
 additional data sources.
 
 ## Credits
@@ -44,8 +44,6 @@ calendar year averages 100. Prices-paid data is monthly from 1995 onward (quarte
   costs, **red** where costs exceed prices.
 - The shaded band inserts interpolated points at each crossover, so the colour
   changes exactly where the lines cross rather than at the next month's grid point.
-- The percentage figures in each panel's callout are computed from the data; only
-  the surrounding narrative clause is hand-written (see `CALLOUTS` in `app.py`).
 
 ## Setup
 
@@ -76,7 +74,6 @@ Constants at the top of `app.py`:
 | `BASE_YEAR` | Year whose monthly average is rebased to 100 (also sets the chart's start) |
 | `TITLE` / `SUBTITLE` | Headline text |
 | `BETA` | Shows or hides the "Beta" tag next to the title |
-| `CALLOUTS` | Per-panel annotation templates |
 
 ## Requirements
 

@@ -51,17 +51,12 @@ body {
 
 .footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: baseline;
     gap: 20px;
     padding: 9px 22px;
     background: #1f4a3c;
     color: #ffffff;
-}
-
-.source {
-    font-size: 10.5px;
-    color: #b9d4c8;
 }
 
 .repo-link {
